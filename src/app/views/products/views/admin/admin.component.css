@@ -1,0 +1,148 @@
+.table-container {
+  max-width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.table-title {
+  font-family: 'Roboto', sans-serif;
+  color: #4A90E2;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.search-container {
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.button-container {
+  margin: 0;
+}
+
+.btn-add {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 12px 25px; /* Aumenta el padding para hacer el botón más grande */
+  border-radius: 6px; /* Ajusta el border-radius para mantener un buen diseño */
+  font-size: 16px; /* Aumenta el tamaño de la fuente */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-add:hover {
+  background-color: #45a049;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #E5E9F2;
+  border-radius: 5px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #4A90E2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+ngx-datatable.custom-datatable {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  color: #333;
+}
+
+ngx-datatable.custom-datatable .datatable-header {
+  background-color: #4A90E2;
+  color: #fff;
+  font-weight: bold;
+  text-align: left;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+ngx-datatable.custom-datatable.striped .datatable-body-row:nth-child(even) {
+  background-color: #F5F7FA;
+}
+
+ngx-datatable.custom-datatable.striped .datatable-body-row:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+ngx-datatable.custom-datatable .datatable-body-cell {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #E5E9F2;
+}
+
+.logo-cell {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.btn {
+  padding: 5px 10px;
+  margin: 0 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-update {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+}
+
+.btn-update:hover {
+  background-color: #45a049;
+}
+
+.btn-delete {
+  background-color: #f44336;
+  color: white;
+  border: none;
+}
+
+.btn-delete:hover {
+  background-color: #d32f2f;
+}
+
+ngx-datatable.custom-datatable .datatable-footer {
+  background-color: #F8F9FA;
+  text-align: center;
+  padding: 10px;
+  font-weight: bold;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    max-width: 95%;
+  }
+
+  ngx-datatable.custom-datatable {
+    font-size: 12px;
+  }
+
+  ngx-datatable.custom-datatable .datatable-header,
+  ngx-datatable.custom-datatable .datatable-footer {
+    padding: 5px;
+  }
+}

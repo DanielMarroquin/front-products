@@ -1,0 +1,111 @@
+<div class="table-container">
+  <div class="header-container">
+    <div class="search-container">
+      <input
+        type="text"
+        placeholder="Buscar..."
+        class="search-input"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch(searchTerm)" />
+    </div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      + Agregar
+    </button>
+  </div>
+
+  <h1 class="table-title">Banco</h1>
+
+  <ngx-datatable
+    class="material container striped custom-datatable"
+    [rows]="rows"
+    [columns]="columns"
+    [columnMode]="'flex'"
+    [headerHeight]="50"
+    [footerHeight]="50"
+    rowHeight="auto">
+
+    <ngx-datatable-column name="Acciones" [flexGrow]="1">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <button class="btn btn-update" (click)="updateRow(row)">Actualizar</button>
+        <button class="btn btn-delete" (click)="deleteProduct(row)">Eliminar</button>
+<!--        <button type="button" class="btn btn-danger" (click)="openDeleteModal()">-->
+<!--          Eliminar Registro-->
+<!--        </button>-->
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Logo" [flexGrow]="1">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <img [src]="row.logo" alt="Logo" class="logo-cell" />
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Nombre del producto" [flexGrow]="2">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.productName }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Descripción" [flexGrow]="3">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.description }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Fecha de Liberación" [flexGrow]="2">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.releaseDate }}
+      </ng-template>
+    </ngx-datatable-column>
+
+    <ngx-datatable-column name="Fecha de reestructuración" [flexGrow]="2">
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.restructuringDate }}
+      </ng-template>
+    </ngx-datatable-column>
+
+  </ngx-datatable>
+</div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar Nuevo Producto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
+          <div class="mb-3">
+            <label for="logo" class="form-label">Logo</label>
+            <input type="text" class="form-control" id="logo" formControlName="logo" placeholder="Ingrese el logo">
+          </div>
+          <div class="mb-3">
+            <label for="productName" class="form-label">Nombre del producto</label>
+            <input type="text" class="form-control" id="productName" formControlName="productName" placeholder="Ingrese el nombre del producto">
+          </div>
+          <div class="mb-3">
+            <label for="description" class="form-label">Descripción</label>
+            <textarea class="form-control" id="description" formControlName="description" rows="3" placeholder="Ingrese una descripción"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="releaseDate" class="form-label">Fecha de Liberación</label>
+            <input type="date" class="form-control" id="releaseDate" formControlName="releaseDate">
+          </div>
+          <div class="mb-3">
+            <label for="restructuringDate" class="form-label">Fecha de reestructuración</label>
+            <input type="date" class="form-control" id="restructuringDate" formControlName="restructuringDate">
+          </div>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
