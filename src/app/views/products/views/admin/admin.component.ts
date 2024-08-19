@@ -4,7 +4,6 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { ProductsService } from "../../../../core/products.service";
 import { HttpClientModule } from "@angular/common/http";
 import { catchError, map, of } from "rxjs";
-// import { ProductsService } from '../../../../core/products.service'
 
 @Component({
   selector: 'app-admin',
@@ -30,24 +29,6 @@ export class AdminComponent implements OnInit{
   ];
 
   rows: any[] = [];
-
-
-  // rows = [
-  //   {
-  //     logo: 'https://www.visa.com.ec/dam/VCOM/regional/lac/SPA/Default/Pay%20With%20Visa/Tarjetas/visa-signature-400x225.jpg',
-  //     productName: 'Producto 1',
-  //     description: 'Descripción del producto 1',
-  //     releaseDate: '2024-01-01',
-  //     restructuringDate: '2025-01-01'
-  //   },
-  //   {
-  //     logo: 'URL_to_logo2',
-  //     productName: 'Producto 2',
-  //     description: 'Descripción del producto 2',
-  //     releaseDate: '2024-02-01',
-  //     restructuringDate: '2025-02-01'
-  //   }
-  // ];
 
   filteredRows = [...this.rows];
 
@@ -84,40 +65,6 @@ export class AdminComponent implements OnInit{
     console.log('Actualizar:', row);
   }
 
-  // saveProduct(): void {
-  //   if (this.productForm.invalid) {
-  //     console.error('Formulario inválido');
-  //     return;
-  //   }
-  //
-  //   const { releaseDate, restructuringDate } = this.productForm.value;
-  //   const today = new Date();
-  //   const release = new Date(releaseDate);
-  //   const restructuring = new Date(restructuringDate);
-  //
-  //   if (release < today) {
-  //     console.error('La Fecha de Liberación debe ser igual o mayor a la fecha actual.');
-  //     return;
-  //   }
-  //
-  //   const expectedRestructuring = new Date(release);
-  //   expectedRestructuring.setFullYear(release.getFullYear() + 1);
-  //
-  //   if (restructuring.toDateString() !== expectedRestructuring.toDateString()) {
-  //     console.error('La Fecha de Revisión debe ser exactamente un año posterior a la Fecha de Liberación.');
-  //     return;
-  //   }
-  //
-  //   this.productService.createProduct(this.productForm.value).subscribe({
-  //     next: (response) => {
-  //       console.log('Producto creado:', response);
-  //       this.loadProducts();
-  //     },
-  //     error: (error) => {
-  //       console.error('Error al crear el producto:', error);
-  //     }
-  //   });
-  // }
   saveProduct(): void {
     if (this.productForm.invalid) {
       console.error('Formulario inválido');
