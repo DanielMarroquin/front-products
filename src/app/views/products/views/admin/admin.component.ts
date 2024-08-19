@@ -4,6 +4,11 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { ProductsService } from "../../../../core/products.service";
 import { HttpClientModule } from "@angular/common/http";
 import { catchError, map, of } from "rxjs";
+// @ts-ignore
+import * as uuid from 'uuid';
+import Swal from 'sweetalert2';
+import { NgClass } from "@angular/common";
+
 
 @Component({
   selector: 'app-admin',
@@ -12,57 +17,52 @@ import { catchError, map, of } from "rxjs";
     NgxDatatableModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgClass
   ],
   standalone: true,
   styleUrls: ['./admin.component.css'],
   providers: [ProductsService]
 })
-export class AdminComponent implements OnInit{
-
+export class AdminComponent implements OnInit {
   columns = [
-    { name: 'Logo' },
-    { name: 'Nombre del producto' },
-    { name: 'Descripción' },
-    { name: 'Fecha de Liberación' },
-    { name: 'Fecha de reestructuración' }
+    {name: 'Logo'},
+    {name: 'Nombre del producto'},
+    {name: 'Descripción'},
+    {name: 'Fecha de Liberación'},
+    {name: 'Fecha de reestructuración'}
   ];
-
   rows: any[] = [];
-
   filteredRows = [...this.rows];
-
-  searchTerm: string = '';
-
   productForm: FormGroup;
 
 
   constructor(
     private fb: FormBuilder,
-   private productService: ProductsService
+    private productService: ProductsService
   ) {
     this.productForm = this.fb.group({
       logo: ['', Validators.required],
-      productName: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
+      name: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(200)]],
-      releaseDate: ['', Validators.required],
-      restructuringDate: ['', Validators.required]
+      date_release: ['', Validators.required],
+      date_revision: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {
-    this.loadProducts()
+    this.loadProducts();
   }
 
   idValidator(control: FormControl) {
     return this.productService.verifyProductExistence(control.value).pipe(
-      map(exists => (exists ? { idExists: true } : null)),
+      map(exists => (exists ? {idExists: true} : null)),
       catchError(() => of(null))
     );
   }
 
-  updateRow(row: any) {
-    console.log('Actualizar:', row);
+  updateProduct(row: any) {
+    console.log('Actualizar', row);
   }
 
   saveProduct(): void {
@@ -70,6 +70,8 @@ export class AdminComponent implements OnInit{
       console.error('Formulario inválido');
       return;
     }
+
+    console.log(this.productForm.value, 'valid');
 
     const { releaseDate, restructuringDate } = this.productForm.value;
     const today = new Date();
@@ -89,20 +91,41 @@ export class AdminComponent implements OnInit{
       return;
     }
 
-    this.productService.createProduct(this.productForm.value).subscribe({
+    const productId = uuid.v4();
+    const newProduct = {
+      id: productId,
+      ...this.productForm.value
+    };
+
+    this.productService.createProduct(newProduct).subscribe({
       next: (response) => {
-        console.log('Producto creado:', response);
-        this.loadProducts();
+        Swal.fire({
+          title: 'Producto Creado',
+          text: 'El producto ha sido creado exitosamente.',
+          icon: 'success',
+          confirmButtonText: 'Aceptar'
+        }).then(() => {
+          const modalElement = document.getElementById('exampleModal');
+          if (modalElement) {
+            const modalBackdrop = document.querySelector('.modal-backdrop');
+            modalElement.classList.remove('show');
+            modalElement.style.display = 'none';
+            modalBackdrop?.parentNode?.removeChild(modalBackdrop);
+            document.body.classList.remove('modal-open');
+            document.body.style.removeProperty('padding-right');
+          }
+
+          this.loadProducts();
+        });
       },
       error: (error) => {
         console.error('Error al crear el producto:', error);
+        Swal.fire('Error', 'Hubo un problema al crear el producto. Por favor, intenta de nuevo.', 'error');
       }
     });
   }
 
-
-
-  loadProducts(): void {
+  loadProducts() {
     this.productService.getAllProducts().subscribe(response => {
       this.rows = response.data;
       this.filteredRows = [...this.rows];
@@ -110,42 +133,41 @@ export class AdminComponent implements OnInit{
   }
 
 
-
   deleteProduct(row: any): void {
-    this.productService.deleteProduct(row.id).subscribe(() => {
-      this.rows = this.rows.filter(product => product.id !== row.id);
-      this.filteredRows = [...this.rows];
-    });
-  }
-
-
-  onSearch(term: string): void {
-    this.searchTerm = term.toLowerCase();
-
-    // Filtrar los productos localmente en rows
-    const filteredLocalRows = this.rows.filter(row =>
-      row.productName.toLowerCase().includes(this.searchTerm) ||
-      row.description.toLowerCase().includes(this.searchTerm)
-    );
-
-    // Reinicializar filteredRows para agregar los productos verificados
-    this.filteredRows = [];
-
-    // Verificar la existencia de cada producto filtrado
-    filteredLocalRows.forEach((row) => {
-      this.productService.verifyProductExistence(row.id).subscribe({
-        next: (exists: boolean) => {
-          if (exists) {
-            // Si el producto existe, agregarlo a filteredRows
-            this.filteredRows.push(row);
+    Swal.fire({
+      title: `¿Estás seguro de eliminar ${row.name}?`,
+      text: '',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'No, gracias'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.productService.deleteProduct(row.id).subscribe({
+          next: () => {
+            this.rows = this.rows.filter(product => product.id !== row.id);
+            this.filteredRows = [...this.rows];
+            Swal.fire('Eliminado', `${row.name} ha sido eliminado.`, 'success');
+          },
+          error: (err) => {
+            console.error('Error al eliminar el producto:', err);
+            Swal.fire('Error', 'Hubo un problema al eliminar el producto. Por favor, intenta de nuevo.', 'error');
           }
-        },
-        error: (error) => {
-          console.error(`Error al verificar la existencia del producto con id ${row.id}:`, error);
-        }
-      });
+        });
+      }
     });
   }
+
+
+
+  onSearch(event: any): void {
+    const searchTerm = event.target.value.toLowerCase();
+    this.filteredRows = this.rows.filter(row =>
+      row.name && row.name.toLowerCase().includes(searchTerm)
+    );
+  }
+
+
 
 
 
